@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Kodowanie znaków i ustawienia strony -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+        .container{
+            background-image: url("bg.jpg");
+            height: 100vh;
+            background-repeat: no-repeat;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        *{
+            margin: 0px;
+            padding: 0px;
+            color: darkblue;
+            
+        }
+        #miasto{
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Ułożenie strony -->
+        <div class="container">
+            <div class="col-lg-5 col-lg-offset-5">
+            <h1>Obecna pogoda</h1>
+            <form id="pogoda" onsubmit="return false">
+                <div class="form-group">
+                    <label>Lokalizacja: </label>
+                    <input type="text" class="form-control" id="miasto" placeholder="np. Jeżowe"> <br>
+                    <button type="submit" class="btn btn-primary">Sprawdź pogodę</button> <br> <br>
+                    <p id="lokalizacja"></p>
+                    <p id="warunki"></p>
+                    <p id="temp"></p>
+                </div>
+            
+            </form>
+        </div>
+        </div>
+        <!-- Dołączenie do strony potrzebnych bibliotek -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript">
+
+            $(document).ready(function(){
+                $("#pogoda").submit(function(event){
+                    szukaj(event);
+                });
+            });
+
+            //Pobranie z api danych
+            function szukaj(event){
+                    var api;
+                    api = $.ajax({
+                    url:'https://api.openweathermap.org/data/2.5/weather',
+                    type:'GET',
+                    data: {
+                        q: $("#miasto").val(),
+                        appid: 'd149f91885c3a809bfc84c809e4bafbf',
+                        units: 'metric'
+                    }
+                });
+
+                api.done(function(odp){
+                    dane(odp);
+                });
+            }
+
+            //Pobranie nazwy miejscowosci i wyswietlenie danych na stronie
+            function dane(json){
+                var lokalizacja = json.name;
+                var warunki = json.weather[0].main;
+                var temp = json.main.temp;
+
+                $("#lokalizacja").text(lokalizacja);
+                $("#warunki").text(warunki);
+                $("#temp").text(temp+"°C");
+
+            }
+
+        </script>
+        
+</body>
+</html>
